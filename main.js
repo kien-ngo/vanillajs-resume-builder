@@ -9,13 +9,11 @@ const preview_phoneNumber = document.getElementById('preview_phoneNumber');
 const preview_email = document.getElementById('preview_email');
 const preview_intro = document.getElementById('preview_intro');
 const preview_extraLinks = document.getElementById('preview_extraLinks');
-const EditorContainer = document.getElementById('EditorContainer');
-
+const attrs = ['name', 'title', 'link', 'duration', 'location'];
 const loadData = async () => {
     const data = await fetch('./resume.json').then(res => res.json());
     initiateValues(data);
 }
-
 const debounce = (func, wait, immediate) => {
     let timeout;
     return function () {
@@ -30,7 +28,6 @@ const debounce = (func, wait, immediate) => {
         if (callNow) func.apply(context, args);
     };
 };
-
 const initiateValues = (data) => {
     input_fullName.value = data.name;
     input_address.value = data.contact.address;
@@ -43,7 +40,6 @@ const initiateValues = (data) => {
     preview_phoneNumber.textContent = data.contact.phone;
     preview_email.textContent = data.contact.email;
     preview_intro.textContent = data.intro;
-    //------------------------------------------------
     if (data.extraLinks && data.extraLinks.length) {
         const htmlString = data.extraLinks.map((item, index) => {
             let str = `<a href=${item.link} target="_blank" class="link">
@@ -54,39 +50,37 @@ const initiateValues = (data) => {
         }).join('');
         preview_extraLinks.innerHTML = htmlString;
     }
-    //------------------------------------------------
     if (data.sections && data.sections.length) {
         populateSectionsForResumeContent(data.sections);
         populateSectionsForEditorContent(data.sections);
     }
 }
-
 const onKeyUp = (element) => {
     const targetId = element.getAttribute('dataTarget');
     const target = document.getElementById(targetId);
     if (!target) return;
     target.textContent = element.value;
+    if (target.classList.contains('link')) target.href = element.value;
 }
-
 const populateSectionsForResumeContent = (sections) => {
     const htmlString = sections.map((section, index) => {
-        const content = section.items.map(subItem => {
+        const content = section.items.map((subItem, subIndex) => {
             const lis = subItem.highlights.map(str => {
                 if (!str) return '';
                 return `<li>${str}</li>`
             }).join('');
             const ul = lis ? `<ul class="Highlights">${lis}</ul>` : '';
-            const anchor = (subItem.link) ? `<a href="${subItem.link}" target="_blank" class="link">${subItem.link}</a>` : '';
-            const location = (subItem.location) ? `<p>${subItem.location}</p>` : '';
-            const duration = (subItem.duration) ? `<p>${subItem.duration}</p>` : '';
+            const anchor = (subItem.link) ? `<a id="preview_link_${index}_${subIndex}" href="${subItem.link}" target="_blank" class="link">${subItem.link}</a>` : '';
+            const location = (subItem.location) ? `<p id="preview_location_${index}_${subIndex}">${subItem.location}</p>` : '';
+            const duration = (subItem.duration) ? `<p id="preview_duration_${index}_${subIndex}">${subItem.duration}</p>` : '';
             const _htmlString = `
                 <div class="BorderTop Item">
                     <div class="ItemTitle">
-                        <p>${subItem.name}</p>
+                        <p id="preview_name_${index}_${subIndex}">${subItem.name}</p>
                         ${location}
                     </div>
                     <div class="ItemSubTitle">
-                        <p>${subItem.title}</p>
+                        <p id="preview_title_${index}_${subIndex}">${subItem.title}</p>
                         ${duration}
                     </div>
                     ${anchor}
@@ -108,37 +102,42 @@ const populateSectionsForResumeContent = (sections) => {
     }).join('');
     preview_intro.insertAdjacentHTML('afterend', htmlString);
 }
-
-const populateAccordionContent = (items) => {
-    const htmlString = items.map(item => {
+const getInputItemContainer = (htmlString) => {
+    return `
+        <div class="InputItem">
+            ${htmlString}
+        </div>
+    `;
+}
+const capitalizeFirstLetter = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+const populateAccordionTextInput = (attrName, item, index, subIndex) => {
+    return `
+        <label>${capitalizeFirstLetter(attrName)}</label>
+        <input 
+            id="input_${attrName}_${subIndex}"
+            dataTarget="preview_${attrName}_${index}_${subIndex}"
+            class="textInput" 
+            value="${item[attrName] ? item[attrName] : ''}"/>
+    `;
+}
+const populateAccordionContent = (index, items) => {
+    const htmlString = items.map((item, subIndex) => {
+        const inputContainers = attrs.map(
+            attr => getInputItemContainer(populateAccordionTextInput(attr, item, index, subIndex))
+        ).join('');
         return `
             <br/>
-            <div class="InputItem">
-                <label for="">Name</label>
-                <input id="" class="textInput" value="${item.name ? item.name : ''}"/>
-            </div>
-            <div class="InputItem">
-                <label for="input_fullName">Title</label>
-                <input id="" class="textInput" value="${item.title ? item.title : ''}"/>
-            </div>
-            <div class="InputItem">
-                <label for="input_fullName">Link</label>
-                <input id="" class="textInput" value="${item.link ? item.link : ''}"/>
-            </div>
-            <div class="InputItem">
-                <label for="input_fullName">Duration</label>
-                <input id="" class="textInput" value="${item.duration ? item.duration : ''}"/>
-            </div>
-            <div class="InputItem">
-                <label for="input_fullName">Location</label>
-                <input id="" class="textInput" value="${item.location ? item.location : ''}"/>
-            </div>
+            ${inputContainers}
+            <details class="HighlightAccordion">
+                <summary>Highlights</summary>
+            </details>
             <hr/>
         `;
     }).join('');
     return htmlString;
 }
-
 const populateReorderButton = (index, val, text, className, idPrefix) => {
     return `
         <button
@@ -150,7 +149,6 @@ const populateReorderButton = (index, val, text, className, idPrefix) => {
             ${text}
         </button>`;
 }
-
 const populateSectionsForEditorContent = (sections) => {
     const htmlString = sections.map((section, index) => {
         const upBtn = populateReorderButton(index, 0, '🡹', 'moveUpBtn', 'upBtn');
@@ -175,14 +173,13 @@ const populateSectionsForEditorContent = (sections) => {
                 />
             </summary>
             <div class="AccordionContent">
-                ${populateAccordionContent(section.items)}
+                ${populateAccordionContent(index, section.items)}
             </div>
         </details>`;
         return accordion;
     }).join('');
-    EditorContainer.insertAdjacentHTML('beforeend', htmlString);
+    document.getElementById('EditorContainer').insertAdjacentHTML('beforeend', htmlString);
 }
-
 const swapElements = (obj1, obj2) => {
     const temp = document.createElement("div");
     obj1.parentNode.insertBefore(temp, obj1);
@@ -190,7 +187,6 @@ const swapElements = (obj1, obj2) => {
     temp.parentNode.insertBefore(obj2, temp);
     temp.parentNode.removeChild(temp);
 }
-
 const deleteSection = (element) => {
     const targetId = element.getAttribute('dataTarget');
     const target = document.getElementById(targetId);
@@ -201,7 +197,6 @@ const deleteSection = (element) => {
     if (!parent) return;
     parent.parentNode.removeChild(parent);
 }
-
 const reorderSectionList = (btn, queryClass, value) => {
     const accordions = getSectionAccordions();
     for (let i = 0; i < accordions.length; i++) {
@@ -220,7 +215,6 @@ const reorderSectionList = (btn, queryClass, value) => {
         return;
     }
 }
-
 const updateUpDownButtonStates = () => {
     const newList = getSectionAccordions();
     newList.forEach((ele, index) => {
@@ -228,36 +222,25 @@ const updateUpDownButtonStates = () => {
         ele.querySelector('.moveDownBtn').disabled = (index === newList.length - 1) ? true : false;
     });
 }
-
 const getSectionAccordions = () => {
     const elements = Array.from(document.getElementsByClassName('SectionAccordion'));
     return elements;
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadData().then(() => {
-        Array.from(document.getElementsByClassName('textInput')).forEach(ele => {
-            ele.onkeyup = (event) => {
-                debounce(onKeyUp(ele), 500);
-            }
-        });
-
-        Array.from(document.getElementsByClassName('deleteBtn')).forEach(btn => {
-            btn.onclick = () => deleteSection(btn);
-        });
-
-        Array.from(document.getElementsByClassName('moveDownBtn')).forEach(btn => {
-            btn.onclick = () => reorderSectionList(btn, '.moveDownBtn', 1);
-        });
-
-        Array.from(document.getElementsByClassName('moveUpBtn')).forEach(btn => {
-            btn.onclick = () => reorderSectionList(btn, '.moveUpBtn', -1);
-        });
-
-        document.getElementById('printBtn').onclick = () => printResume();
+loadData().then(() => {
+    Array.from(document.getElementsByClassName('textInput')).forEach(ele => {
+        ele.onkeyup = () => debounce(onKeyUp(ele), 300);
     });
+    Array.from(document.getElementsByClassName('deleteBtn')).forEach(btn => {
+        btn.onclick = () => deleteSection(btn);
+    });
+    Array.from(document.getElementsByClassName('moveDownBtn')).forEach(btn => {
+        btn.onclick = () => reorderSectionList(btn, '.moveDownBtn', 1);
+    });
+    Array.from(document.getElementsByClassName('moveUpBtn')).forEach(btn => {
+        btn.onclick = () => reorderSectionList(btn, '.moveUpBtn', -1);
+    });
+    document.getElementById('printBtn').onclick = () => printResume();
 });
-
 const printResume = () => {
     const printContents = document.querySelector('.Preview').innerHTML;
     const originalContents = document.body.innerHTML;

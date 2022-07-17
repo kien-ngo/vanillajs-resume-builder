@@ -64,7 +64,7 @@ hr {
 .Preview {
   width: 210mm;
   min-height: 297mm;
-  padding: 1cm;
+  padding: 2cm 1cm;
   margin-left: auto;
   margin-right: auto;
 }
@@ -202,4 +202,15 @@ hr {
 }
 #printBtn:hover {
     text-decoration: underline;
+}
+@page { 
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.HighlightAccordion > summary {
+  text-align: right;
+}
+.infoContainer {
+  display: flex;
+  flex-direction: column;
 }
