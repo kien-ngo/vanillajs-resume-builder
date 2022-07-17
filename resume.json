@@ -89,8 +89,6 @@
           "location": "Toronto, ON",
           "title": "Name of program you took at the college",
           "highlights": [
-            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam deserunt doloremque, corporis praesentium maxime tenetur ab voluptate eius aut ad eos reiciendis molestias, voluptas perspiciatis labore! Sint dolores minus voluptates.",
-            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam deserunt doloremque, corporis praesentium maxime tenetur ab voluptate eius aut ad eos reiciendis molestias, voluptas perspiciatis labore! Sint dolores minus voluptates. consectetur adipisicing elit",
             "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam deserunt doloremque, corporis praesentium maxime tenetur ab voluptate eius aut ad eos reiciendis molestias, voluptas perspiciatis labore! Sint dolores minus voluptates."
           ]
         },
@@ -101,8 +99,7 @@
           "location": "Vung Tau, Viet Nam",
           "title": "Name of program you took at the highschool",
           "highlights": [
-            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam deserunt doloremque, corporis praesentium maxime tenetur ab voluptate eius aut ad eos reiciendis molestias, voluptas perspiciatis labore! Sint dolores minus voluptates. consectetur adipisicing elit",
-            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam deserunt doloremque, corporis praesentium maxime tenetur ab voluptate eius aut ad eos reiciendis molestias, voluptas perspiciatis labore! Sint dolores minus voluptates."
+            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam deserunt doloremque, corporis praesentium maxime tenetur ab voluptate eius aut ad eos reiciendis molestias, voluptas perspiciatis labore! Sint dolores minus voluptates. consectetur adipisicing elit"
           ]
         }
       ]

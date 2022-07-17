@@ -8,7 +8,8 @@
     <div class="Home">
       <div class="EditorContainer" id="EditorContainer">
         <div class="Toolbar">
-            <span id="printBtn">Print</span>
+            <span class="toolbarBtn" id="printBtn">Print</span>
+            <span class="toolbarBtn" id="aboutBtn">About</span>
         </div>
         <div class="InputItem">
           <label>Full Name</label>
@@ -27,10 +28,23 @@
           <input id="input_email" type="email" class="textInput" dataTarget="preview_email"/>
         </div>
         <hr/>
-        <div class="extraLinksContainer">
-            <label id="extraLinkLabel">Extra links</label>
+        <details class="extraLinkDetails">
+          <summary>Extra links</summary>
+          <div class="extraLinksContainer">
+            <label id="extraLinkLabel"></label>
+            <div>
+              <div class="linkInputContainer">
+                <label>URL</label>
+                <input type="text" dataTarget="">
+              </div>
+              <div class="linkInputContainer">
+                <label>Display text</label>
+                <input type="text" dataTarget="" id="input_">
+              </div>
+            </div>
             <button class="addExtraLinkBtn">+</button>
         </div>
+        </details>
         <hr/>
         <div class="textareaContainer">
           <label>Introduction</label>
@@ -43,9 +57,7 @@
           ></textarea>
         </div>
         <hr/>
-        <!-- ---------------------------------------------------------------------------------------------------- -->
       </div>
-
       <!-- PREVIEW -->
       <div class="PreviewContainer">
         <div class="Preview">

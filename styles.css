@@ -186,6 +186,7 @@ hr {
     width: fit-content;
     margin-left: auto;
     cursor: pointer;
+    margin-top: 10px;
 }
 .Toolbar {
     background-color: brown;
@@ -195,12 +196,13 @@ hr {
     color: white;
     display: flex;
 }
-#printBtn {
+.toolbarBtn {
     cursor: pointer;
     margin-top: auto;
     margin-bottom: auto;
+    margin-right: 15px;
 }
-#printBtn:hover {
+.toolbarBtn:hover {
     text-decoration: underline;
 }
 @page { 
@@ -213,4 +215,23 @@ hr {
 .infoContainer {
   display: flex;
   flex-direction: column;
+}
+.linkInputContainer {
+  display: flex;
+  flex-direction: column;
+}
+.linkInputContainer > label {
+  font-size: 12px;
+  text-align: right;
+}
+.extraLinkDetails > summary {
+  text-align: right;
+}
+.deleteItemBtn{
+  width: fit-content;
+  color: white;
+  background-color: red;
+  margin-left: auto;
+  margin-top: 10px;
+  cursor: pointer;
 }

@@ -133,17 +133,18 @@ const populateAccordionContent = (index, items) => {
             <details class="HighlightAccordion">
                 <summary>Highlights</summary>
             </details>
+            <button class="deleteItemBtn">Delete</button>
             <hr/>
         `;
     }).join('');
     return htmlString;
 }
-const populateReorderButton = (index, val, text, className, idPrefix) => {
+const populateReorderButton = (index, val, text, className, idPrefix, parentPrefix, targetPrefix) => {
     return `
         <button
             id="${idPrefix}_${index}"
-            parentId="SectionAccordion_${index}"
-            dataTarget="SectionContainer_${index}"
+            parentId="${parentPrefix}_${index}"
+            dataTarget="${targetPrefix}_${index}"
             ${index === val ? 'disabled' : ''} 
             class="${className}">
             ${text}
@@ -151,9 +152,13 @@ const populateReorderButton = (index, val, text, className, idPrefix) => {
 }
 const populateSectionsForEditorContent = (sections) => {
     const htmlString = sections.map((section, index) => {
-        const upBtn = populateReorderButton(index, 0, '🡹', 'moveUpBtn', 'upBtn');
-        const downBtn = populateReorderButton(index, sections.length - 1, '🡻', 'moveDownBtn', 'downBtn');
-        const accordion = `<details open
+        const upBtn = populateReorderButton(
+            index, 0, '🡹', 'moveUpBtn', 'upBtn', 'SectionAccordion', 'SectionContainer'
+        );
+        const downBtn = populateReorderButton(
+            index, sections.length - 1, '🡻', 'moveDownBtn', 'downBtn', 'SectionAccordion', 'SectionContainer'
+        );
+        const accordion = `<details 
             class="SectionAccordion"
             id="SectionAccordion_${index}">
             <summary>
@@ -225,6 +230,9 @@ const updateUpDownButtonStates = () => {
 const getSectionAccordions = () => {
     const elements = Array.from(document.getElementsByClassName('SectionAccordion'));
     return elements;
+}
+const populateExtraLink = () => {
+
 }
 loadData().then(() => {
     Array.from(document.getElementsByClassName('textInput')).forEach(ele => {
