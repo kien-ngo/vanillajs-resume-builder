@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <!-- EDITOR -->
+    <div class="Home">
+      <div class="EditorContainer" id="EditorContainer">
+        <div class="Toolbar">
+            <span id="printBtn">Print</span>
+        </div>
+        <div class="InputItem">
+          <label for="input_fullName">Full Name</label>
+          <input id="input_fullName" type="text" class="textInput" dataTarget="preview_fullName"/>
+        </div>
+        <div class="InputItem">
+          <label for="input_address">Address</label>
+          <input id="input_address" type="text" class="textInput" dataTarget="preview_address"/>
+        </div>
+        <div class="InputItem">
+          <label for="input_phoneNumber">Phone number</label>
+          <input id="input_phoneNumber" type="tel" class="textInput" dataTarget="preview_phoneNumber"/>
+        </div>
+        <div class="InputItem">
+          <label for="input_email">Email</label>
+          <input id="input_email" type="email" class="textInput" dataTarget="preview_email"/>
+        </div>
+        <hr/>
+        <div class="extraLinksContainer">
+            <label id="extraLinkLabel">Extra links</label>
+            <button class="addExtraLinkBtn">+</button>
+        </div>
+        <hr/>
+        <div class="textareaContainer">
+          <label>Introduction</label>
+          <textarea
+            id="input_intro"
+            cols="30"
+            rows="10"
+            class="textInput"
+            dataTarget="preview_intro"
+          ></textarea>
+        </div>
+        <hr/>
+        <!-- ---------------------------------------------------------------------------------------------------- -->
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="PreviewContainer">
+        <div class="Preview">
+          <div><h3 id="preview_fullName"></h3></div>
+          <div class="Contact">
+            <div>
+              <span id="preview_address"></span><br />
+              <span id="preview_phoneNumber"></span><br />
+              <span id="preview_email"></span>
+            <div id="preview_extraLinks"></div>
+          </div>
+          <div class="BorderTop Intro" id="preview_intro"></div>
+        </div>
+      </div>
+    </div>
+    <script src="./main.js" defer></script>
+  </body>
+</html>
