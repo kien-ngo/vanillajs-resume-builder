@@ -28,21 +28,20 @@
           <input id="input_email" type="email" class="textInput" dataTarget="preview_email"/>
         </div>
         <hr/>
-        <details class="extraLinkDetails">
+        <details class="extraLinkDetails" open>
           <summary>Extra links</summary>
-          <div class="extraLinksContainer">
-            <label id="extraLinkLabel"></label>
+          <div class="extraLinksContainer" id="input_link_container">
             <div>
               <div class="linkInputContainer">
-                <label>URL</label>
-                <input type="text" dataTarget="">
+                <label>Display text</label>
+                <input type="text" id="addExtraLinkDisplayTextInput">
               </div>
               <div class="linkInputContainer">
-                <label>Display text</label>
-                <input type="text" dataTarget="" id="input_">
+                <label>URL</label>
+                <input type="text" id="addExtraLinkUrlInput">
               </div>
             </div>
-            <button class="addExtraLinkBtn">+</button>
+            <button id="addExtraLinkBtn">+</button>
         </div>
         </details>
         <hr/>
@@ -73,6 +72,7 @@
         </div>
       </div>
     </div>
+
     <script src="./main.js" defer></script>
   </body>
 </html>

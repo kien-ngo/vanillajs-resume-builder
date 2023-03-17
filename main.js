@@ -1,15 +1,20 @@
+// Edit column
 const input_fullName = document.getElementById("input_fullName");
 const input_address = document.getElementById("input_address");
 const input_phoneNumber = document.getElementById("input_phoneNumber");
 const input_email = document.getElementById("input_email");
+const input_link_container = document.getElementById("input_link_container");
 const input_intro = document.getElementById("input_intro");
+
+// Preview column
 const preview_fullName = document.getElementById("preview_fullName");
 const preview_address = document.getElementById("preview_address");
 const preview_phoneNumber = document.getElementById("preview_phoneNumber");
 const preview_email = document.getElementById("preview_email");
 const preview_intro = document.getElementById("preview_intro");
 const preview_extraLinks = document.getElementById("preview_extraLinks");
-const attrs = ["name", "title", "link", "duration", "location"];
+
+// Global state to keep track & sync to localStorage
 let globalData;
 const loadData = async () => {
   const localData = localStorage.getItem("resumeData");
@@ -53,7 +58,11 @@ const initiateValues = (data) => {
   if (data.extraLinks && data.extraLinks.length) {
     const htmlString = data.extraLinks
       .map((item, index) => {
-        let str = `<a href=${item.link} target="_blank" class="link">
+        let str = `
+            <a href=${item.link} 
+                id="preview_external_link_${index}"
+                target="_blank" 
+                class="link">
                 ${item.displayText}
             </a>`;
         if (index % 2 === 0) str += " | ";
@@ -61,6 +70,7 @@ const initiateValues = (data) => {
       })
       .join("");
     preview_extraLinks.innerHTML = htmlString;
+    populateExtraLinksAccordionContent(data.extraLinks);
   }
   if (data.sections && data.sections.length) {
     populateSectionsForResumeContent(data.sections);
@@ -72,7 +82,43 @@ const onKeyUp = (element) => {
   const target = document.getElementById(targetId);
   if (!target) return;
   target.textContent = element.value;
-  if (target.classList.contains("link")) target.href = element.value;
+  if (
+    target.classList.contains("link") &&
+    !element.classList.contains("preventUrlChange")
+  )
+    target.href = element.value;
+};
+const populateExtraLinksAccordionContent = (extraLinks) => {
+  const htmlString = extraLinks
+    .map((item, index) => {
+      return `
+        <div class="externalLinkContainer">
+            <div class="linkInputContainer">
+                <label>Display text</label>
+                <input
+                    value="${item.displayText}"
+                    type="text"
+                    dataTarget="preview_external_link_${index}"
+                    id="input_link_display_name_${index}"
+                    class="textInput preventUrlChange"
+                />
+            </div>
+            <div class="linkInputContainer">
+                <label>URL</label>
+                <input
+                    value="${item.link}"
+                    type="text"
+                    dataTarget="preview_external_link_${index}"
+                    id="input_link_url_${index}"
+                    class="textInput"
+                />
+            </div>
+            
+            <hr />
+        </div>`;
+    })
+    .join("");
+  input_link_container.insertAdjacentHTML("afterbegin", htmlString);
 };
 const populateSectionsForResumeContent = (sections) => {
   const htmlString = sections
@@ -113,7 +159,10 @@ const populateSectionsForResumeContent = (sections) => {
         })
         .join("");
       const str = `
-            <div class="Section" id="SectionContainer_${index}">
+            <div 
+                class="Section" 
+                id="SectionContainer_${index}"
+                displayText="${section.displayText}">
                 <h3 class="SectionHeader" 
                     id="preview_SectionHeader_${index}">
                     ${section.displayText}
@@ -146,9 +195,10 @@ const populateAccordionTextInput = (attrName, item, index, subIndex) => {
             value="${item[attrName] ? item[attrName] : ""}"/>
     `;
 };
-const populateAccordionContent = (index, items) => {
+const populateAccordionSectionContent = (index, items) => {
   const htmlString = items
     .map((item, subIndex) => {
+      const attrs = ["name", "title", "link", "duration", "location"];
       const inputContainers = attrs
         .map((attr) =>
           getInputItemContainer(
@@ -229,7 +279,7 @@ const populateSectionsForEditorContent = (sections) => {
                 />
             </summary>
             <div class="AccordionContent">
-                ${populateAccordionContent(index, section.items)}
+                ${populateAccordionSectionContent(index, section.items)}
             </div>
         </details>`;
       return accordion;
@@ -288,7 +338,40 @@ const getSectionAccordions = () => {
   );
   return elements;
 };
-const populateExtraLink = () => {};
+const printResume = () => {
+  const printContents = document.querySelector(".Preview").innerHTML;
+  const originalContents = document.body.innerHTML;
+  document.body.innerHTML = printContents;
+  window.print();
+  document.body.innerHTML = originalContents;
+};
+const validateLink = (url) => {
+  const ipfsRegex = /^ipfs:\/\/\w+/;
+  const httpRegex = /^(http:\/\/|https:\/\/)/;
+  const wwwRegex = /^www\./;
+
+  if (ipfsRegex.test(url)) {
+    return true;
+  }
+
+  if (httpRegex.test(url) || wwwRegex.test(url)) {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  return false;
+};
+const addExtraLink = () => {
+  const linkEle = document.getElementById("addExtraLinkUrlInput");
+  if (!linkEle || !linkEle.value) return;
+  const url = linkEle.value;
+  if (!validateLink(url)) return alert("Invalid link");
+};
+// Run time -------------------------------------------------------->>
 loadData().then(() => {
   Array.from(document.getElementsByClassName("textInput")).forEach((ele) => {
     ele.onkeyup = () => debounce(onKeyUp(ele), 300);
@@ -303,11 +386,5 @@ loadData().then(() => {
     btn.onclick = () => reorderSectionList(btn, ".moveUpBtn", -1);
   });
   document.getElementById("printBtn").onclick = () => printResume();
+  document.getElementById("addExtraLinkBtn").onclick = () => addExtraLink();
 });
-const printResume = () => {
-  const printContents = document.querySelector(".Preview").innerHTML;
-  const originalContents = document.body.innerHTML;
-  document.body.innerHTML = printContents;
-  window.print();
-  document.body.innerHTML = originalContents;
-};

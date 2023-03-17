@@ -52,7 +52,7 @@ hr {
   flex-direction: column;
   padding: 20px;
   height: 100vh;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 .InputItem {
   margin-left: auto;
@@ -180,7 +180,7 @@ hr {
     display: flex;
     flex-direction: column;
 }
-.addExtraLinkBtn {
+#addExtraLinkBtn {
     color: white;
     background-color: blue;
     width: fit-content;
@@ -234,4 +234,7 @@ hr {
   margin-left: auto;
   margin-top: 10px;
   cursor: pointer;
+}
+.externalLinkContainer {
+  margin-bottom: 20px;
 }
